@@ -1,0 +1,60 @@
+Name: Michael Simpson
+Date: 08-05-15
+Course: CS350
+Professor: Massey
+Assignment: #4
+
+
+1) UNION FIND CARRIER SET
+
+    UNION-FIND Carrier Set: Arbitrary set E
+    Operations: init: E -> U; find: U -> E; union: U x U -> U
+    Laws:
+    find (init e; ) = e
+    find (union u v) = find u or find v
+
+    a) OPERATIONS PSEUDOCODE
+
+        /**
+         * The init operation takes in an element E and sets the value of the parent to NIL.
+         * The complexity of the operation is obviously constant.
+         */
+        init
+            element <- E
+            next  <- null
+
+        /**
+         * The find operation takes in a carrier set finds it's canonical element.  Afterwards
+         * it traverses the length of the carrier set and points all other elements parent reference
+         * at the canonical element. Each loop will iterate at most, the number of elements in the
+         * carrier set (n). Since the loops are sequential the complexity is O(n).
+         */
+        find
+            canonical = U
+            next = U.parent
+            previous = U
+
+            while canonical.parent =/= null
+                canonical <- canonical.parent
+
+            while next =/= null
+                previous.parent <- canonical
+                previous <- next
+                next <- next.parent
+
+            return canonical
+
+        /**
+         * The union operation takes in two carrier sets U and V. It finds the canonical element of
+         * each carrier set, then points the parent reference of U to V in order to union the two
+         * sets. Since each call to find will induce O(n) complexity, the sequential calls will mean
+         * that the total complexity of union will also be O(n)
+
+        union
+            canonicalU <- find(U)
+            canonicalV <- find(V)
+            canonicalU.parent <- canonicalV
+            return canonicalV
+
+
+
