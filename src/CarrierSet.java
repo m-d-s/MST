@@ -67,6 +67,10 @@ public class CarrierSet {
         return this.label;
     }
 
+    public Boolean compareLabel(String toCompare) {
+        return this.label.equals(toCompare);
+    }
+
     public void setParent(CarrierSet parent) {
         this.parent = parent;
     }
