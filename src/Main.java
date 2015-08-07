@@ -12,7 +12,6 @@ public class Main {
         PriorityQueue<WeightedEdge> queue;
         ParseFile data = new ParseFile();
         WeightedEdge smallestEdgeInQueue;
-        
         String src, dest;
         CarrierSet U, V;
         ArrayList<WeightedEdge> A = new ArrayList<WeightedEdge>();

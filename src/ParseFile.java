@@ -7,15 +7,17 @@ import java.util.Iterator;
 
 
 public class ParseFile {
+    public ArrayList<CarrierSet> forest = new ArrayList<CarrierSet>();
+    public ArrayList<WeightedEdge> edgeList = new ArrayList<WeightedEdge>();
 
 
-    public ArrayList<String[]> read(String fileName) {
+    public void read(String fileName) {
         WeightedEdge edgeToAdd;
         CarrierSet forestToAdd;
         String delims = "[ ]+";
         String compare = null;
         String line = null;
-        ArrayList<String[]> tokens = new ArrayList<String[]>();
+        String[] tokens;
         int length;
 
         try {
@@ -23,7 +25,19 @@ public class ParseFile {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while((line = bufferedReader.readLine()) != null) {
 
-                tokens.add(line.split(delims));
+                tokens = line.split(delims);
+                edgeToAdd = new WeightedEdge(tokens[0], tokens[1], Integer.parseInt(tokens[2]));
+                edgeList.add(edgeToAdd);
+
+                if(forest.size() > 0){
+                    compare = forest.get(forest.size()-1).getLabel();
+                }
+
+                if(!tokens[0].equals(compare)) {
+                    forestToAdd = new CarrierSet(tokens[0]);
+                    forest.add(forestToAdd);
+                }
+
             }
             bufferedReader.close();
             this.display(forest);
