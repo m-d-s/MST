@@ -11,13 +11,14 @@ public class Main {
         Comparator<WeightedEdge> comparator = new EdgeWeightComparator();
         PriorityQueue<WeightedEdge> queue;
         ParseFile data = new ParseFile();
-        WhightedEdge smallestEdgeInQueue;
+        WeightedEdge smallestEdgeInQueue;
+        
         String src, dest;
         CarrierSet U, V;
-        ArrayList A = new ArrayList<WeigntedEdge>();
+        ArrayList<WeightedEdge> A = new ArrayList<WeightedEdge>();
         int length, sourceVertexIdx, destVertexIdx, forestSize;
 
-        data.read("city-pairs.txt");
+        data.read("testMST.txt");
         queue = new PriorityQueue<WeightedEdge>(data.edgeList.size(), comparator);
         length = data.edgeList.size();
         forestSize = data.forest.size();
@@ -29,27 +30,41 @@ public class Main {
             smallestEdgeInQueue = queue.poll();
             src = smallestEdgeInQueue.getSource();
             dest = smallestEdgeInQueue.getDest();
-            sourceVertexIdx = indexOf(src, data.forest, forestSize)
-            destVertexIdx = indexOf(dest, data.forest, forestSize)
-            U = data.forest[sourceVertex].find(data.forest[sourceVertex]);
-            V = data.forest[destVertex].find(data.forest[destVertex]);
-            if(U.equals(V) == false){
+            sourceVertexIdx = indexOf(src, data.forest, forestSize);
+            destVertexIdx = indexOf(dest, data.forest, forestSize);
+            U = data.forest.get(sourceVertexIdx).find(data.forest.get(sourceVertexIdx));
+            V = data.forest.get(destVertexIdx).find(data.forest.get(destVertexIdx));
+            if(!U.equals(V)){
                 A.add(smallestEdgeInQueue);
                 V = V.union(U, V);
             }
         }
 
-        display(queue);
+        //print(queue);
+        print(A);
+    }
+
+    public static void buildHeap(ArrayList<WeightedEdge> edgeList){
 
     }
   
-    public static void display(PriorityQueue<WeightedEdge> C) {
+    public static void print(PriorityQueue<WeightedEdge> C) {
         WeightedEdge next;
+        Iterator<WeightedEdge> iter = C.iterator();
+        int i = 0;
         while(!C.isEmpty()) {
-            next = C.poll();
+            next = iter.next();
             next.print();
         }
         System.out.println();
+    }
+
+    public static void print(ArrayList<WeightedEdge> A) {
+        int length = A.size();
+        System.out.println("Minimum Spanning Tree size: " + length);
+        for(int i = 0; i < length; ++i) {
+            A.get(i).print();
+        }
     }
 
     /**
@@ -57,9 +72,9 @@ public class Main {
      * Maybe class overwrite.
      */
     public static int indexOf(String label, ArrayList Verticies, int length) {
-        Iterator<CarrierSet> iter = C.iterator();
+        Iterator<CarrierSet> iter = Verticies.iterator();
         CarrierSet next;
-        while(iter.hasNext()) {
+        for(int i =0; i < length; ++i) {
             next = iter.next();
             if(next.compareLabel(label) == true) {
                 return i;

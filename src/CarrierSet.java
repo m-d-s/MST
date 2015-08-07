@@ -20,7 +20,7 @@ public class CarrierSet {
      * each elements parent reference, excluding the canonical's parent reference, points to the canonical
      * element.
      */
-    public CarrierSet Find(CarrierSet U) {
+    public CarrierSet find(CarrierSet U) {
         CarrierSet next = null,
                    prev = null;
 
@@ -52,9 +52,9 @@ public class CarrierSet {
      * Finds the canonical elements of both U and V. Then refers the parent reference of U to V,
      * thus creating the union of U and V.
      */
-    public CarrierSet Union(CarrierSet U, CarrierSet V) {
-        U = Find(U);
-        V = Find(V);
+    public CarrierSet union(CarrierSet U, CarrierSet V) {
+        U = find(U);
+        V = find(V);
         U.setParent(V);
         return V;
     }
