@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<WeightedEdge> A = new Kruskals("testMST.txt").minimumSpanningTree();
+        ArrayList<WeightedEdge> A = new Kruskals("testMST.txt").getMinimumSpanningTree();
         print(A);
     }
 
