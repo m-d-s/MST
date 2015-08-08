@@ -4,16 +4,15 @@ Course: CS350
 Professor: Massey
 Assignment: #4
 
-
-1) UNION FIND CARRIER SET
+*************************************
+* UNION FIND CARRIER SET PSEUDOCODE *
+*************************************
 
     UNION-FIND Carrier Set: Arbitrary set E
     Operations: init: E -> U; find: U -> E; union: U x U -> U
     Laws:
     find (init e; ) = e
     find (union u v) = find u or find v
-
-    a) OPERATIONS PSEUDOCODE
 
         /**
          * The init operation takes in an element E and sets the value of the parent to NIL.
@@ -49,12 +48,70 @@ Assignment: #4
          * each carrier set, then points the parent reference of U to V in order to union the two
          * sets. Since each call to find will induce O(n) complexity, the sequential calls will mean
          * that the total complexity of union will also be O(n)
-
         union
-            canonicalU <- find(U)
-            canonicalV <- find(V)
             canonicalU.parent <- canonicalV
             return canonicalV
+
+**********************************
+* KRUSKAL'S ALGORITHM PSEUDOCODE *
+**********************************
+
+    Kruskal's Minimum Spanning Tree:
+        Instance: Arbitrary weighted graph G
+        Solution: Weighted edge set A that represents a minimum spanning tree of G
+        Algorithm:
+            for each weighted edge E in G
+                add E to priority heap P
+            for each vertex V in G
+                create new carrier set S
+            while P is not empty
+                (u,v) <- dequeue P
+                if find u =/= find v
+                    add (u,v) to A
+                    union u, v
+            return A
+
+    Runtime:
+        Building the priority heap takes O(|E|lg|E|) where |E| equals the number of edges in the graph.
+         Initializing the carrier sets takes O(|V|) where |V| equals the number of vertices in the
+         graph. The find and union operations within the while loop are both linear in relation to the
+         size of each respective carrier set which is bounded by the number of vertices in the graph.
+         The dequeue operation will take O(lg|E|) time, and will happen |E| times giving a runtime of
+         the while loop O(|E|lg|E|). The total runtime of the algorithm is also O(|E|lg|E|).
+
+    Correctness:
+        First For Loop:
+            Invariant - P contains the elements of E that have been iterated.
+
+            The invariant hold prior to entering the loop because the heap is empty and no elements of E
+             have been iterated. It holds during each iteration, since each iteration adds the new
+             element of E to the queue. It holds after the loop has terminated since all elements have been
+             iterated and each has been added to the queue.
+
+        Second For Loop:
+            Applies the same logic as the first for loop.
+
+        While loop
+            Termination - upon every iteration P gets reduced by one element and the loop condition relies
+                          on P being non empty. The loop is guaranteed to terminate.
+
+            Invariant - A contains the edges known to be in the minimum spanning tree.
+
+            The invariant hold prior to entering the loop since no edges have been inspected, and therefore
+            cannot be known to belong to the minimum spanning tree. Upon every iteration, a next shortest
+            element will get dequeued from P. The find routines will discover the canonical elements that
+            each vertex attached to the edge belongs to. If they share the same canonical element, adding this
+            edge would create a cycle and therefore the algorithm discards this edge. If they have different
+            canonical elements, they belong to different sets and the two sets may be unioned. The edge gets
+            added to A, and since it is the shortest known path that connects the two sets, it is guaranteed
+            to be a member of the minimum spanning tree. The loop iterates over every edge in the queue, and
+            does not terminate early if the minimum spanning tree has already been obtained. Since it considers
+            all edges every vertex in the graph is guaranteed to be connected to the minimum spanning tree.
+            Combined with the fact that every edge added was guaranteed to be the shortest possible, I conclude
+            that A is guaranteed to represent the minimum spanning tree of G.
+
+
+
 
 
 

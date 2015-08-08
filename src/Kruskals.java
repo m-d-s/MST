@@ -27,20 +27,20 @@ public class Kruskals {
 
     private void minimumSpanningTree() {
         WeightedEdge smallestEdgeInQueue;
-        CarrierSet[] UV;
-
+        CarrierSet U, V;
         // Loop while there are edges left in the queue
         while(weightedEdgeHeap.peek() != null) {
             // dequeue the shortest edge
             smallestEdgeInQueue = weightedEdgeHeap.poll();
             // identify the canonical element of U and V's respective forests
-            UV = this.getCanonicalElements(smallestEdgeInQueue);
+            U = this.getCanonicalElement(smallestEdgeInQueue.getSource());
+            V = this.getCanonicalElement(smallestEdgeInQueue.getDest());
             // If U and V are in different forests
-            if(!UV[0].equals(UV[1])){
+            if(!U.equals(V)){
                 // Add the edge to the minimum spanning tree
                 this.minimumSpanningTree.add(smallestEdgeInQueue);
                 // Union the two forests
-                UV[1].union(UV[0], UV[1]);
+                U.union(V);
             }
         }
     }
@@ -86,32 +86,20 @@ public class Kruskals {
         return -1;
     }
 
-    private CarrierSet[] getCanonicalElements(WeightedEdge edge) {
-        String src, dest;
-        int sourceVertexIdx, destVertexIdx;
-        CarrierSet [] UV = new CarrierSet[2];
-
-        src = edge.getSource();
-        dest = edge.getDest();
-
-        sourceVertexIdx = indexOf(src);
-        destVertexIdx = indexOf(dest);
-
-        UV[0] = forest.get(sourceVertexIdx).find(forest.get(sourceVertexIdx));
-        UV[1] = forest.get(destVertexIdx).find(forest.get(destVertexIdx));
-
-        return UV;
+    private CarrierSet getCanonicalElement(String label) {
+        int vertexIdx = indexOf(label);
+        return forest.get(vertexIdx).find();
     }
 
-    //    private void displayForest() {
-//        Iterator<CarrierSet> iter = this.forest.iterator();
-//        CarrierSet next;
-//        while(iter.hasNext()) {
-//            next = iter.next();
-//            next.print();
-//        }
-//        System.out.println();
-//    }
+        private void displayForest() {
+        Iterator<CarrierSet> iter = this.forest.iterator();
+        CarrierSet next;
+        while(iter.hasNext()) {
+            next = iter.next();
+            next.print();
+        }
+        System.out.println();
+    }
 
 //    private void printHeap() {
 //        WeightedEdge next;

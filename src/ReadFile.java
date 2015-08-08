@@ -16,12 +16,13 @@ public class ReadFile {
     }
 
     private void read(String fileName) {
-        String delims = "[ ]+";
-        String line = null;
+        String delims = "[ ]+", line = null;
+        BufferedReader bufferedReader;
+        FileReader fileReader;
 
         try {
-            FileReader fileReader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            fileReader = new FileReader(fileName);
+            bufferedReader = new BufferedReader(fileReader);
 
             while((line = bufferedReader.readLine()) != null) {
                 this.tokenSet.add(line.split(delims));

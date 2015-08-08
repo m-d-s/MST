@@ -24,15 +24,12 @@ public class CarrierSet {
      * each elements parent reference, excluding the canonical's parent reference, points to the canonical
      * element.
      */
-    public CarrierSet find(CarrierSet U) {
-        CarrierSet next = null,
-                   prev = null;
+    public CarrierSet find() {
+        CarrierSet U = this,
+                   next = this.parent,
+                   prev = this;
 
         try {
-            // save the tail of the structure
-            next = U.parent;
-            prev = U;
-
             // find the canonical element
             while (U.parent != null) {
                 U = U.parent;
@@ -56,13 +53,9 @@ public class CarrierSet {
      * Finds the canonical elements of both U and V. Then refers the parent reference of U to V,
      * thus creating the union of U and V.
      */
-    public void union(CarrierSet U, CarrierSet V) {
-        U = find(U);
-        V = find(V);
-        U.setParent(V);
-
+    public void union(CarrierSet V) {
+        this.parent = V;
     }
-
 
     public void print() {
         System.out.println(this.label);
@@ -74,9 +67,5 @@ public class CarrierSet {
 
     public Boolean compareLabel(String toCompare) {
         return this.label.equals(toCompare);
-    }
-
-    public void setParent(CarrierSet parent) {
-        this.parent = parent;
     }
 }
