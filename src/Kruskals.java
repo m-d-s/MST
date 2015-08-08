@@ -16,6 +16,7 @@ public class Kruskals {
         ReadFile rawData = new ReadFile(fileName);
         this.forest = new ArrayList<CarrierSet>();
         this.weightedEdgeHeap = new PriorityQueue<WeightedEdge>(comparator);
+        this.minimumSpanningTree = new ArrayList<WeightedEdge>();
         ParseData(rawData.getRawData());
         minimumSpanningTree();
     }
