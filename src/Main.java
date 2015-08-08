@@ -8,44 +8,34 @@ import java.util.Iterator;
 
 public class Main {
     public static void main(String[] args) {
-        Comparator<WeightedEdge> comparator = new EdgeWeightComparator();
-        PriorityQueue<WeightedEdge> queue;
-        ParseFile data = new ParseFile();
-        WeightedEdge smallestEdgeInQueue;
-        String src, dest;
-        CarrierSet U, V;
-        ArrayList<WeightedEdge> A = new ArrayList<WeightedEdge>();
-        int length, sourceVertexIdx, destVertexIdx, forestSize;
-
-        data.read("testMST.txt");
-        queue = new PriorityQueue<WeightedEdge>(data.edgeList.size(), comparator);
-        length = data.edgeList.size();
-        forestSize = data.forest.size();
-        for(int i = 0; i < length; ++i) {
-            queue.add(data.edgeList.get(i));
-        }
-        
-        while(queue.peek() != null) {
-            smallestEdgeInQueue = queue.poll();
-            src = smallestEdgeInQueue.getSource();
-            dest = smallestEdgeInQueue.getDest();
-            sourceVertexIdx = indexOf(src, data.forest, forestSize);
-            destVertexIdx = indexOf(dest, data.forest, forestSize);
-            U = data.forest.get(sourceVertexIdx).find(data.forest.get(sourceVertexIdx));
-            V = data.forest.get(destVertexIdx).find(data.forest.get(destVertexIdx));
-            if(!U.equals(V)){
-                A.add(smallestEdgeInQueue);
-                V = V.union(U, V);
-            }
-        }
-
+        ArrayList<WeightedEdge> A = kruskals();
         //print(queue);
         print(A);
     }
 
-    public static void buildHeap(ArrayList<WeightedEdge> edgeList){
+    public static ArrayList<WeightedEdge> kruskals() {
+        ArrayList<WeightedEdge> A = new ArrayList<WeightedEdge>();
+        ParseFile data = new ParseFile("city-pairs.txt");
+        PriorityQueue<WeightedEdge> queue;
+        WeightedEdge smallestEdgeInQueue;
+        CarrierSet[] UV;
 
+        queue = data.getHeap();
+
+        while(queue.peek() != null) {
+            //get the shortest edge
+            smallestEdgeInQueue = queue.poll();
+            UV = data.getCanonicalElements(smallestEdgeInQueue);
+            if(!UV[0].equals(UV[1])){
+                A.add(smallestEdgeInQueue);
+                UV[1].union(UV[0], UV[1]);
+            }
+        }
+        return A;
     }
+
+
+
   
     public static void print(PriorityQueue<WeightedEdge> C) {
         WeightedEdge next;
@@ -66,20 +56,5 @@ public class Main {
         }
     }
 
-    /**
-     * Make this better. Do this somewhere else. Maybe function poniter
-     * Maybe class overwrite.
-     */
-    public static int indexOf(String label, ArrayList Verticies, int length) {
-        Iterator<CarrierSet> iter = Verticies.iterator();
-        CarrierSet next;
-        for(int i =0; i < length; ++i) {
-            next = iter.next();
-            if(next.compareLabel(label) == true) {
-                return i;
-            }
-        }
-        return -1;
-    }
 }
 

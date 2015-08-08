@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+
 /**
  * Created by msimpson on 8/5/15.
  */
@@ -52,12 +56,13 @@ public class CarrierSet {
      * Finds the canonical elements of both U and V. Then refers the parent reference of U to V,
      * thus creating the union of U and V.
      */
-    public CarrierSet union(CarrierSet U, CarrierSet V) {
+    public void union(CarrierSet U, CarrierSet V) {
         U = find(U);
         V = find(V);
         U.setParent(V);
-        return V;
+
     }
+
 
     public void print() {
         System.out.println(this.label);
