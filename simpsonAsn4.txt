@@ -17,20 +17,21 @@ Note: For the sake of brevity there is supporting code that I did not include in
     find (init e; ) = e
     find (union u v) = find u or find v
 
-        /**
-         * The init operation takes in an element E and sets the value of the parent to NIL.
-         * The complexity of the operation is obviously constant.
-         */
+    Algorithm:
+
         init
             element <- E
             next  <- null
+    Runtime:
 
-        /**
-         * The find operation takes in a carrier set finds it's canonical element.  Afterwards
-         * it traverses the length of the carrier set and points all other elements parent reference
-         * at the canonical element. Each loop will iterate at most, the number of elements in the
-         * carrier set (n). Since the loops are sequential the complexity is O(n).
-         */
+        Since this routine is purely sequential the runtime is constant.
+
+    Correctness:
+        The only element in the set is the one being initialized, therefore it must be the canonical
+         element and the value of the parent gets set to null.
+
+    Algorithm:
+
         find
             canonical = U
             next = U.parent
@@ -46,15 +47,35 @@ Note: For the sake of brevity there is supporting code that I did not include in
 
             return canonical
 
-        /**
-         * The union operation takes in two carrier sets U and V. It finds the canonical element of
-         * each carrier set, then points the parent reference of U to V in order to union the two
-         * sets. Since each call to find will induce O(n) complexity, the sequential calls will mean
-         * that the total complexity of union will also be O(n)
-         */
+    Runtime:
+
+        Each loop will iterate at most, the number of elements in the carrier set (n). Since the loops
+         are not sequential in relation to one another the complexity is O(n).
+
+    Correctness:
+        The first while loop will only iterate if the parent pointer of the potential canonical element
+         is null. It will continue to loop until the parent value is null, then terminate and you have
+         the canonical element of the entire set. The second loop then traverses the rest of the set and
+         assigns every other element to the canonical element. This makes the set bushy, and reduces the
+         practical runtime of future calls to find. In the event of a singleton set the loop will never
+         iterate, and since there are two references traversing the structure there is no danger of the
+         canonical element's parent getting set.
+
+    Algorithm:
+
         union
-            canonicalU.parent <- canonicalV
-            return canonicalV
+            U.parent <- V
+            return V
+
+    Runtime:
+
+        Since this routine is purely sequential the runtime is constant.
+
+    Correctness:
+
+        This operation is meant to be given the canonical elements of two disjoint sets. Setting the
+         parent of U to be V simply unions the two sets. The canonical element of the resulting set is V.
+
 
 *****************************************
 * UNION FIND CARRIER SET IMPLEMENTATION *
