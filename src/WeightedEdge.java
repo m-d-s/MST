@@ -24,10 +24,8 @@ public class WeightedEdge {
         return this.weight;
     }
 
-    public void print() {
-        System.out.println(this.source);
-        System.out.println(this.destination);
-        System.out.println(this.weight);
-        System.out.println();
+    public int print() {
+        System.out.println("\t"+this.source + " " +this.destination + " " + this.weight);
+        return this.weight;
     }
 }

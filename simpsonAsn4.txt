@@ -4,6 +4,9 @@ Course: CS350
 Professor: Massey
 Assignment: #4
 
+Note: For the sake of brevity there is supporting code that I did not include in the implementation portions of
+       this assignment. The full implementation may be found at https://github.com/m-d-s/MST/tree/someThoughts
+
 *************************************
 * UNION FIND CARRIER SET PSEUDOCODE *
 *************************************
@@ -48,9 +51,134 @@ Assignment: #4
          * each carrier set, then points the parent reference of U to V in order to union the two
          * sets. Since each call to find will induce O(n) complexity, the sequential calls will mean
          * that the total complexity of union will also be O(n)
+         */
         union
             canonicalU.parent <- canonicalV
             return canonicalV
+
+*****************************************
+* UNION FIND CARRIER SET IMPLEMENTATION *
+*****************************************
+
+    Code:
+        /**
+         * This is the init operation. The canonical element in the carrier set will
+         * always have it's parent reference set to null. Since upon initialization this
+         * is the only element in the set, its parent is set to null
+         */
+        public CarrierSet(String label) {
+            this.label = label;
+            this.parent = null;
+        }
+
+        /**
+         * Locates the canonical element of carrier set U. Also reorders the structure so that
+         * each elements parent reference, excluding the canonical's parent reference, points to the canonical
+         * element.
+         */
+        public CarrierSet find() {
+            CarrierSet U = this,
+                       next = this.parent,
+                       prev = this;
+
+            try {
+                // find the canonical element
+                while (U.parent != null) {
+                    U = U.parent;
+                }
+                // set every other parent reference in the structure to null
+                while (next != null) {
+                    prev.parent = U;
+                    prev = next;
+                    next = next.parent;
+                }
+
+            }
+            catch(NullPointerException e) {
+                e.printStackTrace();
+            }
+            return U;
+        }
+
+
+        /**
+         * Finds the canonical elements of both U and V. Then refers the parent reference of U to V,
+         * thus creating the union of U and V.
+         */
+        public void union(CarrierSet V) {
+            this.parent = V;
+        }
+
+    Testing:
+          public static void TestCarrierSet(){
+                System.out.println("Carrier-Set Test");
+
+                CarrierSet a,b,c,d,e, test;
+                a = new CarrierSet("a");
+                b = new CarrierSet("b");
+                c = new CarrierSet("c");
+                d = new CarrierSet("d");
+                e = new CarrierSet("e");
+
+                // a is the canonical element of the set to which a belongs
+                if(a.equals(a.find())) {
+                    System.out.println("Find Test 1 Passed");
+                } else {
+                    System.out.println("***Find Test 1 FAILED***");
+                }
+
+                // the canonical element of the set to which c belongs is not b
+                if(!b.equals((c.find()))) {
+                    System.out.println("Find Test 2 Passed");
+                } else {
+                    System.out.println("***Find Test 2 FAILED***");
+                }
+
+                a.union(b);
+                // b is the canonical element of the set to which a belongs
+                if(b.equals(a.find())) {
+                    System.out.println("Union Test 1 Passed");
+                } else {
+                    System.out.println("***Union Test 1 FAILED***");
+                }
+
+                // c is the canonical element of the set to which a belongs
+                b.union(c);
+                if(c.equals(a.find())) {
+                    System.out.println("Union Test 2 Passed");
+                } else {
+                    System.out.println("***Union Test 2 FAILED***");
+                }
+
+                d.union(e);
+                // e is not the canonical element of the set to which c belongs
+                if(!e.equals(c.find())) {
+                    System.out.println("Union Test 3 Passed");
+                } else {
+                    System.out.println("***Union Test 3 FAILED***");
+                }
+
+                d.union(a);
+                // c is the canonical element of the set to which a belongs
+                if(c.equals(a.find())) {
+
+                    System.out.println("Union Test 4 Passed");
+                } else {
+                    System.out.println("***Union Test 4 FAILED***");
+                }
+            }
+
+    Testing Output:
+        All tests of the carrier set union find operations passed.
+
+        Carrier-Set Test:
+            Find  Test 1 Passed
+            Find  Test 2 Passed
+
+            Union Test 1 Passed
+            Union Test 2 Passed
+            Union Test 3 Passed
+            Union Test 4 Passed
 
 **********************************
 * KRUSKAL'S ALGORITHM PSEUDOCODE *
@@ -91,27 +219,175 @@ Assignment: #4
         Second For Loop:
             Applies the same logic as the first for loop.
 
-        While loop
+        While loop:
             Termination - upon every iteration P gets reduced by one element and the loop condition relies
                           on P being non empty. The loop is guaranteed to terminate.
 
             Invariant - A contains the edges known to be in the minimum spanning tree.
 
             The invariant hold prior to entering the loop since no edges have been inspected, and therefore
-            cannot be known to belong to the minimum spanning tree. Upon every iteration, a next shortest
-            element will get dequeued from P. The find routines will discover the canonical elements that
-            each vertex attached to the edge belongs to. If they share the same canonical element, adding this
-            edge would create a cycle and therefore the algorithm discards this edge. If they have different
-            canonical elements, they belong to different sets and the two sets may be unioned. The edge gets
-            added to A, and since it is the shortest known path that connects the two sets, it is guaranteed
-            to be a member of the minimum spanning tree. The loop iterates over every edge in the queue, and
-            does not terminate early if the minimum spanning tree has already been obtained. Since it considers
-            all edges every vertex in the graph is guaranteed to be connected to the minimum spanning tree.
-            Combined with the fact that every edge added was guaranteed to be the shortest possible, I conclude
-            that A is guaranteed to represent the minimum spanning tree of G.
+             cannot be known to belong to the minimum spanning tree. Upon every iteration, a next shortest
+             element will get dequeued from P. The find routines will discover the canonical elements that
+             each vertex attached to the edge belongs to. If they share the same canonical element, adding this
+             edge would create a cycle and therefore the algorithm discards this edge. If they have different
+             canonical elements, they belong to different sets and the two sets may be unioned. The edge gets
+             added to A, and since it is the shortest known path that connects the two sets, it is guaranteed
+             to be a member of the minimum spanning tree. The loop iterates over every edge in the queue, and
+             does not terminate early if the minimum spanning tree has already been obtained. Since it considers
+             all edges every vertex in the graph is guaranteed to be connected to the minimum spanning tree.
+             Combined with the fact that every edge added was guaranteed to be the shortest possible, I conclude
+             that A is guaranteed to represent the minimum spanning tree of G.
 
+**************************************
+* KRUSKAL'S ALGORITHM IMPLEMENTATION *
+**************************************
 
+    Code:
 
+        private void findMinimumSpanningTree() {
+            WeightedEdge smallestEdgeInQueue;
+            CarrierSet U, V;
+            // Loop while there are edges left in the queue
+            while(weightedEdgeHeap.peek() != null) {
+                // dequeue the shortest edge
+                smallestEdgeInQueue = weightedEdgeHeap.poll();
+                // identify the canonical element of U and V's respective forests
+                U = this.getCanonicalElement(smallestEdgeInQueue.getSource());
+                V = this.getCanonicalElement(smallestEdgeInQueue.getDest());
+                // If U and V are in different forests
+                if(!U.equals(V)){
+                    // Add the edge to the minimum spanning tree
+                    this.minimumSpanningTree.add(smallestEdgeInQueue);
+                    // Union the two forests
+                    U.union(V);
+                }
+            }
+        }
 
+    Testing:
 
+        public static void TestKruskals() {
+                ArrayList<WeightedEdge> A;
+                String[] fileNames = {"city-pairs.txt", "someEdges.txt", "testMST.txt", "list.txt", "empty.txt"};
+                int numFiles = fileNames.length;
+                System.out.println("Kruskal's Minimum Spanning Trees Tests\n");
+
+                for(int i = 0; i < numFiles; ++i){
+                    System.out.println("Testing Ouput for: " + fileNames[i]);
+                    A = new Kruskals(fileNames[i]).getMinimumSpanningTree();
+                    print(A);
+                }
+        }
+
+    Testing Output:
+        I ran tests on a few different graphs of my own design. I will spare you the output from those tests, but
+        they all passed. I am listing the output of the graph supplied in the assignment. I compared the size and
+        total weight of my output to another implementation of Kruskal's algorithm and the values matched.
+
+    Minimum Spanning Tree size: 28
+    Total Weight of minimum spanning tree: 1325
+    Minimum Spanning Tree Edge List:
+    	Eugene Springfield 4
+    	Albany Corvallis 11
+    	Ashland Medford 12
+    	Portland Gresham 14
+    	McMinnville Newberg 14
+    	Bend Redmond 16
+    	Salem Woodburn 17
+    	Woodburn Newberg 19
+    	Forest.Grove Portland 23
+    	Portland Newberg 23
+    	Salem Albany 24
+    	Grants.Pass Medford 29
+    	Corvallis Eugene 40
+    	La.Grande Baker.City 44
+    	Florence Coos.Bay 48
+    	Newport Florence 50
+    	Pendleton La.Grande 52
+    	Forest.Grove Tillamook 52
+    	Newport Corvallis 53
+    	Ashland Klamath.Falls 64
+    	Astoria Tillamook 66
+    	Grants.Pass Roseburg 68
+    	Roseburg Springfield 68
+    	Ontario Baker.City 72
+    	Gresham The.Dalles 73
+    	Redmond The.Dalles 114
+    	Pendleton The.Dalles 125
+    	Ontario Burns 130
+
+*******************************************
+* WERTZIAL WIDGETS MATERIAL CONFIGURATION *
+*******************************************
+
+    Problem Description:
+
+        There are three materials involved in the manufacture of Wertzial Widgets (WWs): we will call these
+         materials X, Y and Z. Each WW requires a specified amount of X, Y and Z to manufacture. The X, Y and
+         Z come from one of several conglomerations:
+
+               Alphium (A): X
+               Betium (B):  Y
+               Cetium (C):  Z
+               Deltium (D): XXXYYYZ (3X3YZ)
+               Etium (E):   YYZZZZZ (2Y5Z)
+               Ferium (F):  XXXXXXZZ (6X2Z)
+               Gatium (G):  XXYYYYYYZ (2X6YZ)
+               Herium (H):  YZZ (Y2Z)
+
+        Give worst-case asymptotic polynomial time algorithms for the following problems, and indicate their
+         big-O complexity.
+
+        (a) Given: the amount of each material required to manufacture a WW. Solution: a collection of
+             conglomerations of minimum cardinality (number of conglomerations in the collection) that
+             contains sufficient materials to manufacture that WW. You may not waste material. That is, the
+             total amount of materials in the conglomerations should exactly equal the WW materials cost.
+
+    Algorithm:
+
+        Insert each conglomeration into priority queue P ordered by highest element count. (i.e. Etium would
+        have higher priority than Deltium since it's highest element count is 5)
+
+        A <- total required materials
+        B <- dequeue P
+        C is a list of the used conglomerations initialized to null
+
+        While A has materials
+            Compare A to B
+                if A.X >= B.X and A.Y >= B.Y and A.Z >= B.Z
+                    A.X <- A.X - B.X
+                    A.Y <- A.Y - B.Y
+                    A.Z <- A.Z - B.Z
+                    add B to C
+                else
+                    B <- dequeue P
+        return C
+
+    Runtime:
+
+        Insertion of each conglomeration will be executed in time O(|P|lg|P|) where |P| is the number of
+         conglomerations. In the worst case the queue will dequeue all of it's elements. The dequeue operation
+         can be executed in linear time in relation to |P|. If the total number of conglomerations used to build
+         the conglomeration is N, the total runtime of the while loop is O(N + |P|). Since N may not be bounded
+         by |P|lg|P| this gives a total runtime of O(N + |P|lg|P|).
+
+    Correctness:
+
+        Termination:
+
+            Since there are unit conglomerations we know that P will never attempt to dequeue and empty queue.
+             The individual material counts of A are being reduced each time the inner conditional evaluates to
+             true, and this conditional is guaranteed to evaluate to true eventually based upon the previous
+             statement. Since the while conditional only evaluates to true when there are materials in A and the
+             total needed materials are of a finite value the while loop is guaranteed to terminate.
+
+        Invariant: The count of individual materials in C plus the count of individual materials in A will
+                    equal the count of total needed materials.
+
+            Before the loop starts A contains the total needed materials and C is empty so the invariant holds.
+             On each iteration of the loop if the conditional statement evaluates to true then the material counts
+             of A will be reduced by the value of the material counts of B and B will be added to C. If the
+             conditional evaluates to false, the conglomeration dequeued from P is assigned to B. Both of these
+             possibilities preserve the loop invariant. Once the loop has terminated A will be empty and C will
+             contain the count of individual needed materials.
 

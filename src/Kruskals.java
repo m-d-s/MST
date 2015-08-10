@@ -18,14 +18,14 @@ public class Kruskals {
         this.weightedEdgeHeap = new PriorityQueue<WeightedEdge>(comparator);
         this.minimumSpanningTree = new ArrayList<WeightedEdge>();
         ParseData(rawData.getRawData());
-        minimumSpanningTree();
+        findMinimumSpanningTree();
     }
 
     public ArrayList<WeightedEdge> getMinimumSpanningTree() {
         return this.minimumSpanningTree;
     }
 
-    private void minimumSpanningTree() {
+    private void findMinimumSpanningTree() {
         WeightedEdge smallestEdgeInQueue;
         CarrierSet U, V;
         // Loop while there are edges left in the queue
@@ -91,24 +91,24 @@ public class Kruskals {
         return forest.get(vertexIdx).find();
     }
 
-        private void displayForest() {
-        Iterator<CarrierSet> iter = this.forest.iterator();
-        CarrierSet next;
-        while(iter.hasNext()) {
-            next = iter.next();
-            next.print();
-        }
-        System.out.println();
-    }
+//  private void displayForest() {
+//      Iterator<CarrierSet> iter = this.forest.iterator();
+//      CarrierSet next;
+//      while(iter.hasNext()) {
+//          next = iter.next();
+//          next.print();
+//      }
+//      System.out.println();
+//  }
 
-//    private void printHeap() {
-//        WeightedEdge next;
-//        Iterator<WeightedEdge> iter = this.weightedEdgeHeap.iterator();
-//        int i = 0;
-//        while(iter.hasNext()) {
-//            next = iter.next();
-//            next.print();
-//        }
-//        System.out.println();
-//    }
+//  private void printHeap() {
+//      WeightedEdge next;
+//      Iterator<WeightedEdge> iter = this.weightedEdgeHeap.iterator();
+//      int i = 0;
+//      while(iter.hasNext()) {
+//          next = iter.next();
+//          next.print();
+//      }
+//      System.out.println();
+//  }
 }
