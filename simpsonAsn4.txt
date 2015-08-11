@@ -22,6 +22,7 @@ Note: For the sake of brevity there is supporting code that I did not include in
         init
             element <- E
             next  <- null
+
     Runtime:
 
         Since this routine is purely sequential the runtime is constant.
@@ -83,9 +84,8 @@ Note: For the sake of brevity there is supporting code that I did not include in
 
     Code:
         /**
-         * This is the init operation. The canonical element in the carrier set will
-         * always have it's parent reference set to null. Since upon initialization this
-         * is the only element in the set, its parent is set to null
+         * Since upon initialization this is the only element in the set, its parent
+         * is set to null to denote the canonical element
          */
         public CarrierSet(String label) {
             this.label = label;
@@ -94,37 +94,30 @@ Note: For the sake of brevity there is supporting code that I did not include in
 
         /**
          * Locates the canonical element of carrier set U. Also reorders the structure so that
-         * each elements parent reference, excluding the canonical's parent reference, points to the canonical
-         * element.
+         * each elements parent reference, excluding the canonical's parent reference, points
+         * to the canonical element.
          */
         public CarrierSet find() {
             CarrierSet U = this,
-                       next = this.parent,
-                       prev = this;
+            next = this.parent,
+            prev = this;
 
-            try {
-                // find the canonical element
-                while (U.parent != null) {
-                    U = U.parent;
-                }
-                // set every other parent reference in the structure to null
-                while (next != null) {
-                    prev.parent = U;
-                    prev = next;
-                    next = next.parent;
-                }
-
+            // find the canonical element
+            while (U.parent != null) {
+                U = U.parent;
             }
-            catch(NullPointerException e) {
-                e.printStackTrace();
+            // set every other parent reference in the structure to null
+            while (next != null) {
+                prev.parent = U;
+                prev = next;
+                next = next.parent;
             }
             return U;
         }
 
 
         /**
-         * Finds the canonical elements of both U and V. Then refers the parent reference of U to V,
-         * thus creating the union of U and V.
+         * Refers the parent reference of U to V, thus creating the union of U and V.
          */
         public void union(CarrierSet V) {
             this.parent = V;
@@ -190,16 +183,16 @@ Note: For the sake of brevity there is supporting code that I did not include in
             }
 
     Testing Output:
+
         All tests of the carrier set union find operations passed.
 
         Carrier-Set Test:
             Find  Test 1 Passed
             Find  Test 2 Passed
-
-            Union Test 1 Passed
-            Union Test 2 Passed
-            Union Test 3 Passed
-            Union Test 4 Passed
+            Union/Find Test 1 Passed
+            Union/Find Test 2 Passed
+            Union/Find Test 3 Passed
+            Union/Find Test 4 Passed
 
 **********************************
 * KRUSKAL'S ALGORITHM PSEUDOCODE *
@@ -288,25 +281,32 @@ Note: For the sake of brevity there is supporting code that I did not include in
     Testing:
 
         public static void TestKruskals() {
-                ArrayList<WeightedEdge> A;
-                String[] fileNames = {"city-pairs.txt", "someEdges.txt", "testMST.txt", "list.txt", "empty.txt"};
-                int numFiles = fileNames.length;
-                System.out.println("Kruskal's Minimum Spanning Trees Tests\n");
+            ArrayList<WeightedEdge> A;
+            String[] fileNames = {"city-pairs.txt", "someEdges.txt", "testMST.txt", "list.txt", "empty.txt"};
+            int numFiles = fileNames.length;
+            System.out.println("Kruskal's Minimum Spanning Trees Tests\n");
 
-                for(int i = 0; i < numFiles; ++i){
-                    System.out.println("Testing Ouput for: " + fileNames[i]);
-                    A = new Kruskals(fileNames[i]).getMinimumSpanningTree();
-                    print(A);
-                }
+            for(int i = 0; i < numFiles; ++i){
+                System.out.println("Testing Ouput for: " + fileNames[i]);
+                A = new Kruskals(fileNames[i]).getMinimumSpanningTree();
+                print(A);
+            }
         }
 
     Testing Output:
-        I ran tests on a few different graphs of my own design. I will spare you the output from those tests, but
-        they all passed. I am listing the output of the graph supplied in the assignment. I compared the size and
-        total weight of my output to another implementation of Kruskal's algorithm and the values matched.
 
+        I ran tests on a few different graphs of my own design. I will spare you the output from those tests, but
+         they all passed. I am listing the output of the graph supplied in the assignment. I compared the size and
+         total weight of my output to another implementation of Kruskal's algorithm and the values matched. I also
+         crudely bench marked the runtime. The supplied graph was the largest test that I ran and I did not get a
+         great intuition about the actual runtime of the system. Thus, I have rediscovered the difficulties of
+         measuring real performance of a simple system.
+
+
+    Total execution time: 12ms
     Minimum Spanning Tree size: 28
     Total Weight of minimum spanning tree: 1325
+
     Minimum Spanning Tree Edge List:
     	Eugene Springfield 4
     	Albany Corvallis 11
@@ -374,7 +374,7 @@ Note: For the sake of brevity there is supporting code that I did not include in
         C is a list of the used conglomerations initialized to null
 
         While A has materials
-            Compare A to B
+            compare A to B
                 if A.X >= B.X and A.Y >= B.Y and A.Z >= B.Z
                     A.X <- A.X - B.X
                     A.Y <- A.Y - B.Y
@@ -382,6 +382,10 @@ Note: For the sake of brevity there is supporting code that I did not include in
                     add B to C
                 else
                     B <- dequeue P
+
+        if C has a length greater than one
+            create a new conglomeration with a material signature equal to C
+            add the new conglomeration to the known conglomerations
         return C
 
     Runtime:
@@ -389,8 +393,9 @@ Note: For the sake of brevity there is supporting code that I did not include in
         Insertion of each conglomeration will be executed in time O(|P|lg|P|) where |P| is the number of
          conglomerations. In the worst case the queue will dequeue all of it's elements. The dequeue operation
          can be executed in linear time in relation to |P|. If the total number of conglomerations used to build
-         the conglomeration is N, the total runtime of the while loop is O(N + |P|). Since N may not be bounded
-         by |P|lg|P| this gives a total runtime of O(N + |P|lg|P|).
+         the conglomeration is N, the total runtime of the while loop is O(N + |P|). The memoization that occurs
+         lastly can be executed in constant time. Since N may not be bounded by |P|lg|P| this gives a total runtime
+         of O(N + |P|lg|P|).
 
     Correctness:
 
@@ -412,3 +417,9 @@ Note: For the sake of brevity there is supporting code that I did not include in
              possibilities preserve the loop invariant. Once the loop has terminated A will be empty and C will
              contain the count of individual needed materials.
 
+        Memoization:
+
+            If the length of C is greater than one after the execution of the while loop that means that the
+             configuration of materials that C represents is unique. Creating a new conglomeration and adding
+             it to the known conglomerations reduces average runtime since this exact configuration will never
+             need to be calculated again and it can be used as a building block for other configurations.

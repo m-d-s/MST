@@ -17,8 +17,7 @@ public class Kruskals {
         this.forest = new ArrayList<CarrierSet>();
         this.weightedEdgeHeap = new PriorityQueue<WeightedEdge>(comparator);
         this.minimumSpanningTree = new ArrayList<WeightedEdge>();
-        ParseData(rawData.getRawData());
-        findMinimumSpanningTree();
+        benchmark(rawData);
     }
 
     public ArrayList<WeightedEdge> getMinimumSpanningTree() {
@@ -45,7 +44,7 @@ public class Kruskals {
         }
     }
 
-    private void ParseData(ArrayList<String[]> tokenSet) {
+    private void parseData(ArrayList<String[]> tokenSet) {
         WeightedEdge edgeToAdd;
         String[] tokens;
         String compare = null;
@@ -89,6 +88,18 @@ public class Kruskals {
     private CarrierSet getCanonicalElement(String label) {
         int vertexIdx = indexOf(label);
         return forest.get(vertexIdx).find();
+    }
+
+    private void execute(ReadFile rawData) {
+        this.parseData(rawData.getRawData());
+        this.findMinimumSpanningTree();
+    }
+
+    private void benchmark(ReadFile rawData) {
+        long startTime = System.currentTimeMillis();
+        this.execute(rawData);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total execution time: " + (endTime-startTime) + "ms");
     }
 
 //  private void displayForest() {
